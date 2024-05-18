@@ -11,7 +11,6 @@ class LogisticRegression:
         extend_x = np.hstack((np.ones((x.shape[0], 1)), x))
         samples_count = x.shape[0]
 
-        print(self.weights)
         for i in range(self.label_num):
             one_vs_all_y = np.apply_along_axis(lambda label: 1 if label[i] == 1 else 0, axis=1, arr=y)
 

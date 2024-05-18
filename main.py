@@ -2,7 +2,7 @@ import numpy as np
 
 from encode import one_hot_encode
 from regression import LogisticRegression
-from error import mean_squared_error
+from error import log_loss
 
 np.random.seed(42)
 
@@ -43,7 +43,7 @@ logistic_regression.train(X, y, 0.1)
 predicted = np.apply_along_axis(logistic_regression.predict, 1, test_x)
 
 
-print(mean_squared_error(test_y, predicted))
+print(log_loss(test_y, predicted))
 
 r = np.sum(test_y == predicted, axis=1)
 print("accuracy", np.count_nonzero(r[r == 3]) / test_y.shape[0])
