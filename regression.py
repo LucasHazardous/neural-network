@@ -7,7 +7,7 @@ class LogisticRegression:
         self.label_num = label_num
         self.weights = np.random.uniform(low=-1, high=1, size=(label_num, feature_num + 1))
 
-    def train(self, x, y, learning_rate):
+    def train(self, x, y, learning_rate, regularization=0):
         extend_x = np.hstack((np.ones((x.shape[0], 1)), x))
         samples_count = x.shape[0]
 
@@ -20,11 +20,17 @@ class LogisticRegression:
                 np.transpose(extend_x) @ (-one_vs_all_y * np.log(h) - (1 - one_vs_all_y) * np.log(1 - h))
             )
 
-            self.weights[i] -= gradient * learning_rate
+            regularization_update = regularization / samples_count * self.weights[i]
+            regularization_update[0] = 0
+            self.weights[i] -= learning_rate * (gradient + regularization_update)
 
     def predict(self, x):
         extend_x = np.hstack((np.ones(1), x))
         h = sigmoid(self.weights @ extend_x)
+        return h
+
+    def precise_predict(self, x):
+        h = self.predict(x)
         chosen = np.argmax(h)
 
         result = np.zeros(self.label_num)
