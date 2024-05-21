@@ -1,6 +1,7 @@
 import numpy as np
 
 from encode import one_hot_encode
+from neural_network import NeuralNetwork
 from regression import LogisticRegression
 from error import log_loss
 from features import generate_polynomial_features
@@ -57,3 +58,13 @@ precise_predicted_test = np.apply_along_axis(logistic_regression.precise_predict
 
 r = np.sum(test_y == precise_predicted_test, axis=1)
 print("test accuracy", np.count_nonzero(r[r == 3]) / test_y.shape[0])
+
+nn = NeuralNetwork(4 * POLYNOMIAL_DEGREE, [5], 3)
+
+for i in range(10):
+    nn.train(X, y, 1)
+
+precise_predicted_test = np.apply_along_axis(nn.precise_predict, 1, test_x)
+
+r = np.sum(test_y == precise_predicted_test, axis=1)
+print("nn test accuracy", np.count_nonzero(r[r == 3]) / test_y.shape[0])
