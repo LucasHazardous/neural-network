@@ -1,8 +1,8 @@
 import numpy as np
 
 from metrics import measure_accuracy
-from neural_network import NeuralNetwork
-from regression import LogisticRegression
+from model.neural_network import NeuralNetwork
+from model.regression import LogisticRegression
 from error import log_loss
 
 from dataset.iris.iris_example import IrisExampleDataset

@@ -1,8 +1,8 @@
 import numpy as np
 
-from normalization import mean_and_scale_normalization
-from encode import one_hot_encode
-from features import add_polynomial_features
+from preprocessing.normalization import mean_and_scale_normalization
+from preprocessing.encode import one_hot_encode
+from preprocessing.features import add_polynomial_features
 
 MAPPER = [
     "Iris-setosa",
