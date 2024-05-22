@@ -2,6 +2,8 @@ import numpy as np
 from activation import sigmoid
 from typing import Tuple, List
 
+from model.base_model import BaseModel
+
 
 def sigmoid_gradient(z: np.ndarray) -> np.ndarray:
     return sigmoid(z) * (1 - sigmoid(z))
@@ -11,7 +13,7 @@ def softmax(z: np.ndarray) -> np.ndarray:
     return np.exp(z) / np.sum(np.exp(z))
 
 
-class NeuralNetwork:
+class NeuralNetwork(BaseModel):
     def __init__(self, feature_layer_size: int, hidden_layers_sizes: List[int], result_layer_size: int):
         self.weights = []
         self.result_layer_size = result_layer_size

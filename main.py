@@ -1,6 +1,7 @@
 import numpy as np
 
 from metrics import measure_accuracy
+from model.base_model import BaseModel
 from model.neural_network import NeuralNetwork
 from model.regression import LogisticRegression
 from error import log_loss
@@ -41,7 +42,7 @@ def neural_network_test():
     return measure_loss_and_accuracy_test(nn)
 
 
-def measure_loss_and_accuracy_test(model):
+def measure_loss_and_accuracy_test(model: BaseModel):
     predicted = np.apply_along_axis(model.predict, 1, X)
     train_loss = log_loss(y, predicted)
 

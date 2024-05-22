@@ -1,8 +1,9 @@
 import numpy as np
 from activation import sigmoid
+from model.base_model import BaseModel
 
 
-class LogisticRegression:
+class LogisticRegression(BaseModel):
     def __init__(self, feature_num, label_num):
         self.label_num = label_num
         self.weights = np.random.uniform(low=-1, high=1, size=(label_num, feature_num + 1))
