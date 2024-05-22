@@ -1,8 +1,9 @@
 import numpy as np
 from activation import sigmoid
+from typing import Tuple, List
 
 
-def sigmoid_gradient(z):
+def sigmoid_gradient(z: np.ndarray) -> np.ndarray:
     return sigmoid(z) * (1 - sigmoid(z))
 
 
@@ -15,24 +16,39 @@ class NeuralNetwork:
             weight = np.random.uniform(low=-1, high=1, size=(layer_sizes[i - 1] + 1, layer_sizes[i]))
             self.weights.append(weight)
 
-    def train(self, x, y, learning_rate, regularization=0):
+    def train(self, x: np.ndarray, y: np.ndarray, learning_rate: float, regularization: float = 0):
         sample_count = x.shape[0]
 
-        gradients = [np.zeros(weight.shape) for weight in self.weights]
+        gradients = self.__compute_gradients(x, y, sample_count)
 
-        for sample, label in zip(x, y):
-            back_pass_result = self.backward_pass(sample, label, sample_count)
-            for layer in range(len(gradients)):
-                gradients[layer] += back_pass_result[layer]
+        self.__apply_learning_gradients_with_regularization(gradients, learning_rate, regularization, sample_count)
 
+    def __apply_learning_gradients_with_regularization(
+            self,
+            gradients: List[np.ndarray],
+            learning_rate: float,
+            regularization: float,
+            sample_count: int
+    ):
         for layer in range(len(gradients)):
             weight_regularization = regularization / sample_count * self.weights[layer]
             weight_regularization[:, 0] = 0
 
             self.weights[layer] -= learning_rate * gradients[layer] + weight_regularization
 
-    def backward_pass(self, sample, label, sample_count):
-        activations, connections = self.forward_pass(sample)
+    def __compute_gradients(self, x: np.ndarray, y: np.ndarray, sample_count: int) -> List[np.ndarray]:
+        gradients = [np.zeros(weight.shape) for weight in self.weights]
+
+        for sample, label in zip(x, y):
+            back_pass_result = self.__backward_pass(sample, label, sample_count)
+            for layer in range(len(gradients)):
+                gradients[layer] += back_pass_result[layer]
+
+        return gradients
+
+    def __backward_pass(self, sample: np.ndarray, label: np.ndarray, sample_count: int) -> List[np.ndarray]:
+        activations, connections = self.__forward_pass(sample)
+
         final_delta = activations[-1] - label
         final_deltas = [final_delta]
 
@@ -49,25 +65,29 @@ class NeuralNetwork:
 
         return final_grads
 
-    def forward_pass(self, x):
+    def __forward_pass(self, x: np.ndarray) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         activations = [np.hstack((np.ones(1), x))]
         connections = []
+
         for weight in self.weights:
             connection = activations[-1] @ weight
             connections.append(connection)
+
             activation = sigmoid(np.hstack((np.ones(1), connection)))
             activations.append(activation)
+
         activations[-1] = activations[-1][1:]
+
         return activations, connections
 
-    def predict(self, x):
+    def predict(self, x: np.ndarray) -> np.ndarray:
         result = x
         for weight in self.weights:
             result = np.hstack((np.ones(1), result))
             result = sigmoid(result @ weight)
         return result
 
-    def precise_predict(self, x):
+    def precise_predict(self, x: np.ndarray) -> np.ndarray:
         h = self.predict(x)
         chosen = np.argmax(h)
 
