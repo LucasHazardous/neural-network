@@ -7,8 +7,12 @@ def sigmoid_gradient(z: np.ndarray) -> np.ndarray:
     return sigmoid(z) * (1 - sigmoid(z))
 
 
+def softmax(z: np.ndarray) -> np.ndarray:
+    return np.exp(z) / np.sum(np.exp(z))
+
+
 class NeuralNetwork:
-    def __init__(self, feature_layer_size, hidden_layers_sizes, result_layer_size):
+    def __init__(self, feature_layer_size: int, hidden_layers_sizes: List[int], result_layer_size: int):
         self.weights = []
         self.result_layer_size = result_layer_size
         layer_sizes = [feature_layer_size, *hidden_layers_sizes, result_layer_size]
@@ -77,6 +81,7 @@ class NeuralNetwork:
             activations.append(activation)
 
         activations[-1] = activations[-1][1:]
+        activations[-1] = softmax(activations[-1])
 
         return activations, connections
 
@@ -85,6 +90,8 @@ class NeuralNetwork:
         for weight in self.weights:
             result = np.hstack((np.ones(1), result))
             result = sigmoid(result @ weight)
+
+        result = softmax(result)
         return result
 
     def precise_predict(self, x: np.ndarray) -> np.ndarray:
