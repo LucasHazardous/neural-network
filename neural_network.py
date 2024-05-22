@@ -15,7 +15,7 @@ class NeuralNetwork:
             weight = np.random.uniform(low=-1, high=1, size=(layer_sizes[i - 1] + 1, layer_sizes[i]))
             self.weights.append(weight)
 
-    def train(self, x, y, learning_rate):
+    def train(self, x, y, learning_rate, regularization=0):
         sample_count = x.shape[0]
 
         gradients = [np.zeros(weight.shape) for weight in self.weights]
@@ -26,7 +26,10 @@ class NeuralNetwork:
                 gradients[layer] += back_pass_result[layer]
 
         for layer in range(len(gradients)):
-            self.weights[layer] -= learning_rate * gradients[layer]
+            weight_regularization = regularization / sample_count * self.weights[layer]
+            weight_regularization[:, 0] = 0
+
+            self.weights[layer] -= learning_rate * gradients[layer] + weight_regularization
 
     def backward_pass(self, sample, label, sample_count):
         activations, connections = self.forward_pass(sample)

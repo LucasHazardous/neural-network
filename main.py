@@ -59,10 +59,10 @@ precise_predicted_test = np.apply_along_axis(logistic_regression.precise_predict
 r = np.sum(test_y == precise_predicted_test, axis=1)
 print("test accuracy", np.count_nonzero(r[r == 3]) / test_y.shape[0])
 
-nn = NeuralNetwork(4 * POLYNOMIAL_DEGREE, [5], 3)
+nn = NeuralNetwork(4 * POLYNOMIAL_DEGREE, [50], 3)
 
 for i in range(10):
-    nn.train(X, y, 1)
+    nn.train(X, y, 1, 1)
 
 precise_predicted_test = np.apply_along_axis(nn.precise_predict, 1, test_x)
 
