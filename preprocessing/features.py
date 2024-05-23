@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def add_polynomial_features(x, max_degree):
+def add_polynomial_features(x: np.ndarray, max_degree: int) -> np.ndarray:
     result = np.zeros((x.shape[0], x.shape[1] * max_degree))
     result[:, :x.shape[1]] = x
 

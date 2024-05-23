@@ -17,7 +17,7 @@ iris_dataset = IrisExampleDataset(POLYNOMIAL_DEGREE)
 X, y, test_x, test_y = iris_dataset.train_test_split(.2)
 
 
-def logistic_regression_test():
+def logistic_regression_test() -> (float, float, float):
     logistic_regression = LogisticRegression(
         IrisExampleDataset.IRIS_FEATURE_NUM * POLYNOMIAL_DEGREE,
         IrisExampleDataset.IRIS_LABEL_NUM
@@ -29,7 +29,7 @@ def logistic_regression_test():
     return measure_loss_and_accuracy_test(logistic_regression)
 
 
-def neural_network_test():
+def neural_network_test() -> (float, float, float):
     nn = NeuralNetwork(
         IrisExampleDataset.IRIS_FEATURE_NUM * POLYNOMIAL_DEGREE,
         [50],
@@ -42,7 +42,7 @@ def neural_network_test():
     return measure_loss_and_accuracy_test(nn)
 
 
-def measure_loss_and_accuracy_test(model: BaseModel):
+def measure_loss_and_accuracy_test(model: BaseModel) -> (float, float, float):
     predicted = np.apply_along_axis(model.predict, 1, X)
     train_loss = log_loss(y, predicted)
 

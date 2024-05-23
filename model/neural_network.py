@@ -1,6 +1,5 @@
 import numpy as np
 from activation import sigmoid
-from typing import Tuple, List
 
 from model.base_model import BaseModel
 
@@ -14,7 +13,7 @@ def softmax(z: np.ndarray) -> np.ndarray:
 
 
 class NeuralNetwork(BaseModel):
-    def __init__(self, feature_layer_size: int, hidden_layers_sizes: List[int], result_layer_size: int):
+    def __init__(self, feature_layer_size: int, hidden_layers_sizes: list[int], result_layer_size: int):
         self.weights = []
         self.result_layer_size = result_layer_size
         layer_sizes = [feature_layer_size, *hidden_layers_sizes, result_layer_size]
@@ -31,7 +30,7 @@ class NeuralNetwork(BaseModel):
 
     def __apply_learning_gradients_with_regularization(
             self,
-            gradients: List[np.ndarray],
+            gradients: list[np.ndarray],
             learning_rate: float,
             regularization: float,
             sample_count: int
@@ -42,7 +41,7 @@ class NeuralNetwork(BaseModel):
 
             self.weights[layer] -= learning_rate * gradients[layer] + weight_regularization
 
-    def __compute_gradients(self, x: np.ndarray, y: np.ndarray, sample_count: int) -> List[np.ndarray]:
+    def __compute_gradients(self, x: np.ndarray, y: np.ndarray, sample_count: int) -> list[np.ndarray]:
         gradients = [np.zeros(weight.shape) for weight in self.weights]
 
         for sample, label in zip(x, y):
@@ -52,7 +51,7 @@ class NeuralNetwork(BaseModel):
 
         return gradients
 
-    def __backward_pass(self, sample: np.ndarray, label: np.ndarray, sample_count: int) -> List[np.ndarray]:
+    def __backward_pass(self, sample: np.ndarray, label: np.ndarray, sample_count: int) -> list[np.ndarray]:
         activations, connections = self.__forward_pass(sample)
 
         final_delta = activations[-1] - label
@@ -71,7 +70,7 @@ class NeuralNetwork(BaseModel):
 
         return final_grads
 
-    def __forward_pass(self, x: np.ndarray) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    def __forward_pass(self, x: np.ndarray) -> (list[np.ndarray], list[np.ndarray]):
         activations = [np.hstack((np.ones(1), x))]
         connections = []
 

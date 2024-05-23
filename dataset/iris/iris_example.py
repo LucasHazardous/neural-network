@@ -15,7 +15,7 @@ class IrisExampleDataset(object):
     IRIS_FEATURE_NUM = 4
     IRIS_LABEL_NUM = 3
 
-    def __init__(self, polynomial_degree=1):
+    def __init__(self, polynomial_degree: int = 1):
         self.data = np.loadtxt("dataset/iris/Iris.csv", delimiter=",", skiprows=1, dtype=str)
         np.random.shuffle(self.data)
 
@@ -36,12 +36,12 @@ class IrisExampleDataset(object):
 
         self.data[:, 4] = vectorized_label_convert(self.data[:, 4])
 
-    def __feature_label_split(self):
+    def __feature_label_split(self) -> (np.ndarray, np.ndarray):
         x = self.data[:, :4].astype(dtype=np.float16)
         y = self.data[:, 4].astype(dtype=np.uint8)
         return x, y
 
-    def train_test_split(self, test_size=0.2):
+    def train_test_split(self, test_size: float = 0.2) -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray):
         test_size = int(self.data.shape[0] * test_size)
 
         test_x = self.X[:test_size]

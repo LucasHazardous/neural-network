@@ -4,11 +4,11 @@ from model.base_model import BaseModel
 
 
 class LogisticRegression(BaseModel):
-    def __init__(self, feature_num, label_num):
+    def __init__(self, feature_num: int, label_num: int):
         self.label_num = label_num
         self.weights = np.random.uniform(low=-1, high=1, size=(label_num, feature_num + 1))
 
-    def train(self, x, y, learning_rate, regularization=0):
+    def train(self, x: np.ndarray, y: np.ndarray, learning_rate: float, regularization: float = 0):
         extend_x = np.hstack((np.ones((x.shape[0], 1)), x))
         samples_count = x.shape[0]
 
@@ -25,12 +25,12 @@ class LogisticRegression(BaseModel):
             regularization_update[0] = 0
             self.weights[i] -= learning_rate * (gradient + regularization_update)
 
-    def predict(self, x):
+    def predict(self, x: np.ndarray) -> np.ndarray:
         extend_x = np.hstack((np.ones(1), x))
         h = sigmoid(self.weights @ extend_x)
         return h
 
-    def precise_predict(self, x):
+    def precise_predict(self, x: np.ndarray) -> np.ndarray:
         h = self.predict(x)
         chosen = np.argmax(h)
 
