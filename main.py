@@ -2,7 +2,7 @@ import numpy as np
 
 from metrics import measure_accuracy
 from model.base_model import BaseModel
-from model.neural_network import NeuralNetwork
+from model.neural_network import NeuralNetwork, ActivationEnum
 from model.regression import LogisticRegression
 from error import log_loss
 
@@ -33,7 +33,8 @@ def neural_network_test() -> (float, float, float):
     nn = NeuralNetwork(
         IrisExampleDataset.IRIS_FEATURE_NUM * POLYNOMIAL_DEGREE,
         [50],
-        IrisExampleDataset.IRIS_LABEL_NUM
+        IrisExampleDataset.IRIS_LABEL_NUM,
+        ActivationEnum.Sigmoid
     )
 
     for i in range(10):

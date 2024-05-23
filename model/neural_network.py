@@ -1,19 +1,33 @@
+from enum import Enum
 import numpy as np
-from activation import sigmoid
 
+from activation import sigmoid, relu, relu_gradient, sigmoid_gradient, softmax
 from model.base_model import BaseModel
 
 
-def sigmoid_gradient(z: np.ndarray) -> np.ndarray:
-    return sigmoid(z) * (1 - sigmoid(z))
+class ActivationEnum(Enum):
+    ReLU = "ReLU"
+    Sigmoid = "Sigmoid"
 
 
-def softmax(z: np.ndarray) -> np.ndarray:
-    return np.exp(z) / np.sum(np.exp(z))
+def choose_activation_function_with_derivative(activation: ActivationEnum):
+    match activation:
+        case ActivationEnum.ReLU:
+            return relu, relu_gradient
+        case ActivationEnum.Sigmoid:
+            return sigmoid, sigmoid_gradient
 
 
 class NeuralNetwork(BaseModel):
-    def __init__(self, feature_layer_size: int, hidden_layers_sizes: list[int], result_layer_size: int):
+    def __init__(
+            self,
+            feature_layer_size: int,
+            hidden_layers_sizes: list[int],
+            result_layer_size: int,
+            activation: ActivationEnum
+    ):
+        self.__activation, self.__activation_derivative = choose_activation_function_with_derivative(activation)
+
         self.weights = []
         self.result_layer_size = result_layer_size
         layer_sizes = [feature_layer_size, *hidden_layers_sizes, result_layer_size]
@@ -62,7 +76,7 @@ class NeuralNetwork(BaseModel):
 
         for i in range(len(self.weights) - 1, 0, -1):
             activation, connection, weight = activations[i - 1], connections[i - 1], self.weights[i]
-            delta = weight[1:, :] @ final_deltas[0] * sigmoid_gradient(connection)
+            delta = weight[1:, :] @ final_deltas[0] * self.__activation_derivative(connection)
             grad = np.outer(delta / sample_count, activation)
 
             final_grads.insert(0, grad.T)
@@ -78,7 +92,7 @@ class NeuralNetwork(BaseModel):
             connection = activations[-1] @ weight
             connections.append(connection)
 
-            activation = sigmoid(np.hstack((np.ones(1), connection)))
+            activation = self.__activation(np.hstack((np.ones(1), connection)))
             activations.append(activation)
 
         activations[-1] = activations[-1][1:]
@@ -90,7 +104,7 @@ class NeuralNetwork(BaseModel):
         result = x
         for weight in self.weights:
             result = np.hstack((np.ones(1), result))
-            result = sigmoid(result @ weight)
+            result = self.__activation(result @ weight)
 
         result = softmax(result)
         return result
