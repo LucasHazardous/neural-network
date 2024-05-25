@@ -1,21 +1,7 @@
-from enum import Enum
 import numpy as np
 
-from activation import sigmoid, relu, relu_gradient, sigmoid_gradient, softmax
+from activation import softmax, ActivationEnum, choose_activation_function_with_derivative
 from model.base_model import BaseModel
-
-
-class ActivationEnum(Enum):
-    ReLU = "ReLU"
-    Sigmoid = "Sigmoid"
-
-
-def choose_activation_function_with_derivative(activation: ActivationEnum):
-    match activation:
-        case ActivationEnum.ReLU:
-            return relu, relu_gradient
-        case ActivationEnum.Sigmoid:
-            return sigmoid, sigmoid_gradient
 
 
 class NeuralNetwork(BaseModel):

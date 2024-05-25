@@ -1,3 +1,5 @@
+from enum import Enum
+
 import numpy as np
 
 
@@ -20,3 +22,16 @@ def relu_gradient(z: np.ndarray) -> np.ndarray:
 def softmax(z: np.ndarray) -> np.ndarray:
     z = z - z.max()
     return np.exp(z) / np.sum(np.exp(z))
+
+
+class ActivationEnum(Enum):
+    ReLU = "ReLU"
+    Sigmoid = "Sigmoid"
+
+
+def choose_activation_function_with_derivative(activation: ActivationEnum):
+    match activation:
+        case ActivationEnum.ReLU:
+            return relu, relu_gradient
+        case ActivationEnum.Sigmoid:
+            return sigmoid, sigmoid_gradient
